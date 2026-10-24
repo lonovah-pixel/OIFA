@@ -1,0 +1,28 @@
+"siteveil"
+{
+    "base"          "darkrp"
+    "title"         "SITE-VEIL"
+    "version"       "0.1.0"
+    "category"      "rp"
+    "menusystem"    "1"
+
+    "author_name"   "SITE-VEIL contributors"
+    "author_email"  ""
+    "author_url"    ""
+
+    "icon"  ""
+    "info"  "SCP-RP gamemode derived from DarkRP"
+    "hide"  "0"
+
+    "settings"
+    {
+        1
+        {
+            "name"      "siteveil_debug"
+            "text"      "SITE-VEIL debug output"
+            "help"      "Prints verbose diagnostics to the server console"
+            "type"      "CheckBox"
+            "default"   "0"
+        }
+    }
+}
