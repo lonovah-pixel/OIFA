@@ -882,7 +882,15 @@ end
 --- Calls an RPC as the given player.
 function MOCK.rpc(ply, name, ...)
     local values = {name}
-    for i = 1, select("#", ...) do values[#values + 1] = select(i, ...) end
+    local def = SiteVeil and SiteVeil.Net.defs[name]
+    for i = 1, select("#", ...) do
+        local v = select(i, ...)
+        -- Encode like the client writer does (json arguments travel as strings).
+        if def and def.args[i] and string.sub(def.args[i], 1, 4) == "json" and type(v) == "table" then
+            v = util.TableToJSON(v)
+        end
+        values[#values + 1] = v
+    end
     MOCK.clientSend(ply, "sv_rpc", values)
 end
 
@@ -906,4 +914,18 @@ function MOCK.say(ply, text, teamOnly)
         end
     end
     return ret
+end
+
+-- CAMI (bundled with DarkRP) ------------------------------------------------------------
+CAMI = {privileges = {}}
+function CAMI.RegisterPrivilege(p) CAMI.privileges[p.Name] = p end
+function CAMI.UsergroupInherits(group, ancestor)
+    if group == ancestor then return true end
+    return group == "superadmin" and ancestor == "admin"
+end
+function CAMI.PlayerHasAccess(ply, priv, cb)
+    local p = CAMI.privileges[priv]
+    local ok = p == nil or (p.MinAccess == "admin" and ply:IsAdmin()) or (p.MinAccess == "superadmin" and ply:IsSuperAdmin()) or p.MinAccess == "user"
+    if cb then cb(ok) end
+    return ok
 end

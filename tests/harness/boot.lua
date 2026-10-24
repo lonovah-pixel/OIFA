@@ -67,6 +67,19 @@ function contains(haystack, needle, msg)
     end
 end
 
+local nameCounter = 0
+local letters = {"а", "б", "в", "г", "д", "е", "ж", "з", "и", "к"}
+--- Unique valid character name: base + letter-encoded counter.
+function uniqueName(base)
+    nameCounter = nameCounter + 1
+    local n, suffix = nameCounter, ""
+    repeat
+        suffix = letters[n % 10 + 1] .. suffix
+        n = math.floor(n / 10)
+    until n == 0
+    return (base or "Тест Тестов") .. suffix
+end
+
 --- Creates a joined player with a character in the given division and role.
 function makeStaff(opts)
     opts = opts or {}

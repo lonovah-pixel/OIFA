@@ -20,6 +20,7 @@ M{name = "config", stage = "boot", files = {
     "config/sh_access.lua",
     "config/sh_comms.lua",
     "config/sh_supply.lua",
+    "config/sh_facility.lua",
 }}
 
 M{name = "roles", stage = "boot", deps = {"config"}, files = {
@@ -110,6 +111,21 @@ M{name = "supply", deps = {"inventory", "access", "shift"}, files = {
     "modules/supply/sh_supply.lua",
     "modules/supply/sv_supply.lua",
     "modules/supply/cl_supply.lua",
+}}
+
+M{name = "facility", deps = {"mapcfg", "inventory", "access", "supply"}, files = {
+    "modules/facility/sh_facility.lua",
+    "modules/facility/sv_infra.lua",
+    "modules/facility/sv_terminals.lua",
+    "modules/facility/sv_states.lua",
+    "modules/facility/cl_facility.lua",
+}}
+
+M{name = "admin", deps = {"facility", "mapcfg", "characters"}, files = {
+    "modules/admin/sh_admin.lua",
+    "modules/admin/sv_admin.lua",
+    "modules/admin/sv_mapedit.lua",
+    "modules/admin/cl_admin.lua",
 }}
 
 M{name = "ui", deps = {"ui_base", "tasks", "supply"}, files = {
