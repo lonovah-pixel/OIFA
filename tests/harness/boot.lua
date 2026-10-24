@@ -14,6 +14,20 @@ hook.Call("DarkRPFinishedLoading", GM)
 
 SiteVeil.BaseClass = MOCK.BaseClass
 SiteVeil.Loader.loadStage("main")
+
+-- Scripted entities and weapons of the gamemode (the engine loads these).
+for _, class in ipairs(__host_list("siteveil/entities/entities")) do
+    ENT = {}
+    include("siteveil/entities/entities/" .. class .. "/shared.lua")
+    scripted_ents.Register(ENT, class)
+    ENT = nil
+end
+for _, class in ipairs(__host_list("siteveil/entities/weapons")) do
+    SWEP = {Primary = {}, Secondary = {}}
+    include("siteveil/entities/weapons/" .. class .. "/shared.lua")
+    weapons.stored[class] = SWEP
+    SWEP = nil
+end
 SiteVeil.Startup()
 hook.Run("InitPostEntity")
 MOCK.advance(2)
@@ -74,5 +88,6 @@ function makeStaff(opts)
         local ok, msg = SiteVeil.Chars.assignRole(p, SiteVeil.Roles.get(opts.role), {reason = "test"})
         assert(ok, "role not assigned: " .. tostring(msg))
     end
+    MOCK.advance(0.1) -- next-tick work (card sync)
     return p
 end

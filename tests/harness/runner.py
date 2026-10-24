@@ -134,6 +134,14 @@ class Host:
     def data_exists(self, path):
         return path in self.data
 
+    def list_dirs(self, path):
+        full = os.path.normpath(os.path.join(GAMEMODES, path))
+        t = self.lua.table()
+        if full.startswith(GAMEMODES) and os.path.isdir(full):
+            for i, name in enumerate(sorted(os.listdir(full))):
+                t[i + 1] = name
+        return t
+
     def install(self):
         g = self.lua.globals()
         g["__host_sql"] = self.sql
@@ -144,6 +152,7 @@ class Host:
         g["__host_data_read"] = self.data_read
         g["__host_data_write"] = self.data_write
         g["__host_data_exists"] = self.data_exists
+        g["__host_list"] = self.list_dirs
         with open(os.path.join(HARNESS, "gmod_mock.lua"), encoding="utf-8") as fh:
             self.lua.execute(fh.read())
         with open(os.path.join(HARNESS, "boot.lua"), encoding="utf-8") as fh:

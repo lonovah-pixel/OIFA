@@ -529,10 +529,19 @@ function ENT:SetCustomCollisionCheck() end
 function ENT:GetCollisionGroup() return 0 end
 
 ents = {}
+function ENT:NetworkVar(_, _, name)
+    self.nwvars = self.nwvars or {}
+    self["Set" .. name] = function(s, v) s.nwvars[name] = v end
+    self["Get" .. name] = function(s) local v = s.nwvars[name] if v == nil then return "" end return v end
+end
+
 function ents.Create(class)
     local e = newEntity(class)
     local stored = scripted_ents.stored[class]
-    if stored then for k, v in pairs(stored.t) do e[k] = v end end
+    if stored then
+        for k, v in pairs(stored.t) do e[k] = v end
+        if e.SetupDataTables then e:SetupDataTables() end
+    end
     return e
 end
 function ents.GetAll() local o = {} for _, e in ipairs(entities) do if e.valid then o[#o + 1] = e end end return o end

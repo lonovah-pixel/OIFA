@@ -359,6 +359,7 @@ end
 function Chars.assignRole(ply, role, opts)
     opts = opts or {}
     local oldRole = Roles.ofPlayer(ply)
+    hook.Run("SiteVeil.BeforeRoleChange", ply, role, oldRole)
     if not Bridge.setTeam(ply, role.team) then
         return false, "DarkRP отклонил смену роли."
     end
