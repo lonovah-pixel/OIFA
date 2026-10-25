@@ -779,6 +779,8 @@ function PLY:getJobTable() return RPExtraTeams[self.teamId] end
 
 MOCK.notifications = {}
 DarkRP = {disabledDefaults = {modules = {}, jobs = {}, shipments = {}, entities = {}, ammo = {}, agendas = {}, doorgroups = {}, demotegroups = {}, groupchat = {}, food = {}, hitmen = {}, vehicles = {}, workarounds = {}}}
+MOCK.languages = {}
+function DarkRP.addLanguage(name, tbl) MOCK.languages[name] = tbl end
 function DarkRP.notify(ply, kind, len, msg)
     local list = type(ply) == "table" and ply.__isEntity and {ply} or ply
     for _, p in ipairs(list or {}) do

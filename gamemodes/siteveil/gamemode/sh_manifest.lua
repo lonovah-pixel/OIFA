@@ -63,6 +63,7 @@ M{name = "darkrp_bridge", deps = {"core", "darkrp_preload"}, files = {
     "modules/darkrp_bridge/sv_shims.lua",
     "modules/darkrp_bridge/cl_shims.lua",
     "modules/darkrp_bridge/sh_commands.lua",
+    "modules/darkrp_bridge/sh_language.lua",
     "modules/darkrp_bridge/sv_gate.lua",
     "modules/darkrp_bridge/sv_verify.lua",
 }}
@@ -194,6 +195,9 @@ M{name = "admin", deps = {"facility", "mapcfg", "characters"}, files = {
     "modules/admin/sv_admin.lua",
     "modules/admin/sv_mapedit.lua",
     "modules/admin/cl_admin.lua",
+    "modules/admin/sh_panel.lua",
+    "modules/admin/sv_panel.lua",
+    "modules/admin/cl_panel.lua",
 }}
 
 M{name = "ui", deps = {"ui_base", "tasks", "supply"}, files = {
