@@ -24,6 +24,9 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 GAMEMODES = os.path.join(ROOT, "gamemodes")
 HARNESS = os.path.dirname(os.path.abspath(__file__))
 TESTS = os.path.join(ROOT, "tests", "server")
+CLIENT_TESTS = os.path.join(ROOT, "tests", "client")
+# Push payloads recorded by server tests, replayed by the client smoke test.
+FIXTURES = os.path.join(ROOT, "tests", ".fixtures", "pushes.json")
 
 
 class Host:
@@ -142,8 +145,9 @@ class Host:
                 t[i + 1] = name
         return t
 
-    def install(self):
+    def install(self, client=False):
         g = self.lua.globals()
+        g["__CLIENT_MODE"] = client
         g["__host_sql"] = self.sql
         g["__host_json_encode"] = self.json_encode
         g["__host_json_decode"] = self.json_decode
@@ -153,16 +157,39 @@ class Host:
         g["__host_data_write"] = self.data_write
         g["__host_data_exists"] = self.data_exists
         g["__host_list"] = self.list_dirs
+        g["__host_fixtures"] = lambda: open(FIXTURES, encoding="utf-8").read() if os.path.exists(FIXTURES) else None
         with open(os.path.join(HARNESS, "gmod_mock.lua"), encoding="utf-8") as fh:
             self.lua.execute(fh.read())
+        if client:
+            with open(os.path.join(HARNESS, "client_stubs.lua"), encoding="utf-8") as fh:
+                self.lua.execute(fh.read())
         with open(os.path.join(HARNESS, "boot.lua"), encoding="utf-8") as fh:
             self.lua.execute(fh.read())
 
 
+def save_push_samples(host):
+    samples = host.lua_to_py(host.lua.globals().MOCK.pushSamples)
+    if not isinstance(samples, dict):
+        return
+    os.makedirs(os.path.dirname(FIXTURES), exist_ok=True)
+    merged = {}
+    if os.path.exists(FIXTURES):
+        with open(FIXTURES, encoding="utf-8") as fh:
+            merged = json.load(fh)
+    for event, payloads in samples.items():
+        merged.setdefault(event, [])
+        for p in payloads:
+            if len(merged[event]) < 3 and p not in merged[event]:
+                merged[event].append(p)
+    with open(FIXTURES, "w", encoding="utf-8") as fh:
+        json.dump(merged, fh, ensure_ascii=False, sort_keys=True)
+
+
 def run_file(path):
     host = Host()
+    client = os.path.basename(os.path.dirname(os.path.abspath(path))) == "client"
     try:
-        host.install()
+        host.install(client)
     except Exception:  # noqa: BLE001 - report loader failures as test failure
         print(f"FAIL {os.path.basename(path)}: gamemode failed to load")
         traceback.print_exc()
@@ -177,6 +204,8 @@ def run_file(path):
         return 0, 1
     host.lua.execute("io.flush()")
     sys.stdout.flush()
+    if not client:
+        save_push_samples(host)
     result = host.lua.globals().TEST_RESULTS
     passed = int(result.passed)
     failed = int(result.failed)
@@ -184,9 +213,13 @@ def run_file(path):
 
 
 def main(argv):
-    files = argv or sorted(
-        os.path.join(TESTS, f) for f in os.listdir(TESTS) if f.endswith(".lua")
-    )
+    files = argv or [
+        os.path.join(d, f)
+        for d in (TESTS, CLIENT_TESTS) if os.path.isdir(d)
+        for f in sorted(os.listdir(d)) if f.endswith(".lua")
+    ]
+    if not argv and os.path.exists(FIXTURES):
+        os.remove(FIXTURES)  # a full run records fresh samples
     total_pass = total_fail = 0
     for f in files:
         p, fl = run_file(f)

@@ -17,8 +17,9 @@ Host functions provided by runner.py (prefixed with __host_):
   __host_data_read/write/exists(path)
 ---------------------------------------------------------------------------]]
 
-SERVER = true
-CLIENT = false
+-- The client smoke test sets __CLIENT_MODE before loading this file.
+CLIENT = __CLIENT_MODE == true
+SERVER = not CLIENT
 MOCK = {}
 
 local clock = 0
@@ -392,9 +393,36 @@ net.ReadTable = function() return r() or {} end
 net.ReadAngle = function() return r() or Angle() end
 function net.BytesWritten() return #wbuf * 4 end
 MOCK.sent = {}
+--- Copy of a payload without engine objects (entities -> index, vectors ->
+--- {x, y, z}); used to keep samples of pushes for the client smoke test.
+local function sanitize(v, depth)
+    depth = depth or 0
+    if type(v) ~= "table" then
+        if type(v) == "function" then return nil end
+        return v
+    end
+    if v.__isEntity then return v.index or 0 end
+    if v.__isVector then return {v.x, v.y, v.z} end
+    if v.__isAngle then return {v.p, v.y, v.r} end
+    if depth > 8 then return nil end
+    local out = {}
+    for k, x in pairs(v) do
+        if type(k) == "string" or type(k) == "number" then out[k] = sanitize(x, depth + 1) end
+    end
+    return out
+end
+MOCK.sanitize = sanitize
+MOCK.pushSamples = {}
+
 local function deliver(targets)
     local msg = {name = current, data = wbuf, targets = targets}
     table.insert(MOCK.sent, msg)
+    if current == "sv_push" then
+        local event = wbuf[1]
+        local list = MOCK.pushSamples[event] or {}
+        MOCK.pushSamples[event] = list
+        if #list < 3 then list[#list + 1] = sanitize(wbuf[2]) end
+    end
 end
 function net.Send(target) deliver(type(target) == "table" and target.__isEntity and {target} or target) end
 function net.Broadcast() deliver(player.GetAll()) end
