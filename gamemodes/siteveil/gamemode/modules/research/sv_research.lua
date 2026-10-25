@@ -357,7 +357,7 @@ local function record(exp, extra)
 end
 
 local function close(exp)
-    for _, p in ipairs(table.Copy(exp.members)) do
+    for _, p in ipairs({unpack(exp.members)}) do
         removeMember(exp, p)
         if IsValid(p) then Net.send(p, "research.closed", {id = exp.id}) end
     end
