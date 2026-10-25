@@ -4,8 +4,9 @@ Reproducible server randomness.
 Gameplay rolls that matter (experiment outcomes, director choices, SCP
 effects) use a seeded xorshift32 generator. Every roll source derives its
 seed from the session seed and a stable identifier, and the seed is written
-to the corresponding record, so any outcome can be reproduced with
-`sv_rng_replay <seed>` or by starting the server with `sv_rng_seed <n>`.
+to the corresponding record (experiments, director log), so an outcome can
+be recomputed (`sv_research_replay <id>`) and a whole session repeated by
+starting the server with `sv_rng_seed <n>`.
 ---------------------------------------------------------------------------]]
 
 local SV = SiteVeil

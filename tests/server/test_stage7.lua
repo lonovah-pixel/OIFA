@@ -56,3 +56,16 @@ TEST("admin panel: tickets can be claimed, answered and closed; audit search fil
     expect(res and #res.data.list >= 3, "audit search returned nothing")
     for _, r in ipairs(res.data.list) do eq(r.category, "admin") end
 end)
+
+TEST("map export produces a Lua file the shipped-config loader can read", function()
+    local sa = MOCK.join({name = "Super", superadmin = true})
+    SV.Admin.setDuty(sa, true)
+    MOCK.rpc(sa, "mapcfg.command", "export")
+    local text = file.Read("siteveil/export/" .. game.GetMap() .. ".lua.txt", "DATA")
+    expect(text, "export file not written")
+    local fn = loadstring(text)
+    expect(fn, "export is not valid Lua")
+    local cfg = fn()
+    eq(#cfg.zones, #SV.MapCfg.cfg.zones)
+    eq(#cfg.points, #SV.MapCfg.cfg.points)
+end)

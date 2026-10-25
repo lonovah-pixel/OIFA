@@ -42,6 +42,31 @@ local function cleanProps(kind, raw)
     return out
 end
 
+--- Serialises plain data (tables, strings, numbers, booleans) as Lua source.
+function Admin.toLua(v, indent)
+    indent = indent or ""
+    local t = type(v)
+    if t == "string" then return string.format("%q", v) end
+    if t == "number" then return tostring(math.Round(v, 3)) end
+    if t == "boolean" then return tostring(v) end
+    if t ~= "table" then return "nil" end
+    local inner = indent .. "    "
+    local parts = {}
+    if #v > 0 then
+        for _, x in ipairs(v) do parts[#parts + 1] = inner .. Admin.toLua(x, inner) end
+    else
+        local keys = {}
+        for k in pairs(v) do keys[#keys + 1] = k end
+        table.sort(keys, function(a, b) return tostring(a) < tostring(b) end)
+        for _, k in ipairs(keys) do
+            local key = (isstring(k) and string.match(k, "^[%a_][%w_]*$")) and k or ("[" .. Admin.toLua(k) .. "]")
+            parts[#parts + 1] = inner .. key .. " = " .. Admin.toLua(v[k], inner)
+        end
+    end
+    if #parts == 0 then return "{}" end
+    return "{\n" .. table.concat(parts, ",\n") .. ",\n" .. indent .. "}"
+end
+
 local function guard(ply)
     if not Admin.isOnDuty(ply) or not Admin.can(ply, "SiteVeil_MapConfig") then
         return false, "Нужны права настройки карты и режим дежурства (/adminduty)."
@@ -283,10 +308,11 @@ Net.handle("mapcfg.command", function(ply, cmd)
         Admin.sendMapConfig(ply)
         return true, "Построен автоматический макет (не сохранён)."
     elseif cmd == "export" then
-        local text = "return " .. util.TableToJSON(MapCfg.cfg, true)
+        -- A Lua file that can be shipped as gamemode/mapcfg/<map>.lua.
+        local text = "-- SITE-VEIL map configuration for " .. game.GetMap() .. ", exported " .. os.date("%Y-%m-%d %H:%M") .. "\nreturn " .. Admin.toLua(MapCfg.cfg) .. "\n"
         file.CreateDir("siteveil/export")
-        file.Write("siteveil/export/" .. game.GetMap() .. ".json.txt", text)
-        return true, "Экспортировано в data/siteveil/export/" .. game.GetMap() .. ".json.txt"
+        file.Write("siteveil/export/" .. game.GetMap() .. ".lua.txt", text)
+        return true, "Экспортировано в data/siteveil/export/" .. game.GetMap() .. ".lua.txt"
     end
     Net.violation(ply, "unknown mapcfg command")
     return false

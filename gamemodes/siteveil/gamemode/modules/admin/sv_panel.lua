@@ -102,7 +102,8 @@ Net.handle("admin.audit", function(ply, raw)
     local ok, why = need(ply, "SiteVeil_Admin")
     if not ok then return false, why end
     local f = istable(raw) and raw or {}
-    local filter = {limit = 60}
+    -- Kept small: the answer travels as one net message (64 KB limit).
+    local filter = {limit = 40}
     if isstring(f.category) and f.category ~= "" then filter.category = string.sub(f.category, 1, 24) end
     if isstring(f.actor) and string.match(f.actor, "^%d+$") then filter.actor = f.actor end
     if isstring(f.text) and f.text ~= "" then filter.text = string.sub(f.text, 1, 48) end
@@ -111,7 +112,7 @@ Net.handle("admin.audit", function(ply, raw)
     local out = {}
     for _, r in ipairs(rows) do
         out[#out + 1] = {when = os.date("%d.%m %H:%M:%S", tonumber(r.time)), category = r.category, action = r.action,
-            actor = r.actor_name, actorSid = r.actor_sid, target = r.target_sid, details = string.sub(r.details or "", 1, 300)}
+            actor = r.actor_name, actorSid = r.actor_sid, target = r.target_sid, details = string.sub(r.details or "", 1, 200)}
     end
     Net.send(ply, "admin.audit", {list = out})
 end)

@@ -1,0 +1,34 @@
+// SITE-VEIL: пример garrysmod/cfg/server.cfg
+// Скопируйте в garrysmod/cfg/server.cfg и измените значения в угловых скобках.
+
+hostname "<Название сервера> | SCP-RP SITE-VEIL"
+rcon_password "<длинный случайный пароль>"
+sv_password ""
+sv_lan 0
+sv_region 3                 // 3 = Европа
+sv_loadingurl ""
+
+// Режим запускается параметром командной строки: +gamemode siteveil
+// Отдельные системы SITE-VEIL:
+sv_director 1               // «Директор напряжения» (0 = выключен)
+sv_hidden_tasks 1           // «Двойные задачи» (0 = выключены)
+sv_rng_seed ""              // фиксированное зерно ГСЧ для воспроизводимых проверок; пусто = случайное
+
+// Голос: SITE-VEIL сам решает, кто кого слышит (расстояние и рации).
+sv_voiceenable 1
+sv_alltalk 0
+
+// Загрузка контента: SITE-VEIL не требует Workshop-контента.
+sv_allowdownload 1
+sv_allowupload 0
+
+// Производительность
+sv_maxrate 0
+sv_minrate 75000
+fps_max 0
+
+// Логи
+log on
+sv_logbans 1
+sv_logecho 1
+sv_logfile 1
