@@ -84,3 +84,8 @@ hook.Add("SiteVeil.Sync", "SiteVeil.UI.MenuTitle", function(channel, key, value)
         end
     end
 end)
+
+-- Terminals whose screen is a tab of the service menu open that tab.
+SV.Net.on("ui.openTab", function(data)
+    UI.openMenu(data.tab)
+end)

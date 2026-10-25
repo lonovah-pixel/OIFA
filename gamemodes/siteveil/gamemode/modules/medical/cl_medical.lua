@@ -101,3 +101,20 @@ UI.registerInteraction{
     id = "examine", name = "Осмотреть", order = 21,
     action = function(target) Net.call("med.examine", target) end,
 }
+
+Net.on("med.terminal", function(data)
+    local f = vgui.Create("SVFrame")
+    f:SetHeader("МЕДИЦИНСКИЙ ТЕРМИНАЛ")
+    f:SetSize(UI.S(560), UI.S(520))
+    f:Center()
+    f:MakePopup()
+    local scroll = UI.scroll(f)
+    local p = UI.card(scroll, "Недееспособные сотрудники")
+    if #data.patients == 0 then UI.text(p, "Нет данных о пострадавших.", "SV.Small", UI.Colors.dim) end
+    for _, x in ipairs(data.patients) do
+        UI.text(p, x.name .. " · " .. (x.sector and ("сектор " .. x.sector) or "местоположение неизвестно (нет наблюдения)") ..
+            (x.stabilised and " · стабилен" or (" · без помощи ~" .. x.left .. " с")), "SV.Small", x.stabilised and UI.Colors.ok or UI.Colors.danger)
+    end
+    local s = UI.card(scroll, "Склад медблока")
+    for _, it in ipairs(data.stock) do UI.text(s, it.name .. ": " .. it.count, "SV.Small") end
+end)

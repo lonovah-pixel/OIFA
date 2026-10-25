@@ -222,6 +222,7 @@ UI.registerTab{
         end
         UI.facilityStatus = nil -- refresh on next open
         local scroll = UI.scroll(panel)
+        hook.Run("SiteVeil.FacilityTab", scroll)
         local st = Sync.get("facility", "state") or {id = "normal"}
         local card = UI.card(scroll, "Режим: " .. (F.states[st.id] and F.states[st.id].name or st.id), UI.StateColors[st.id])
         if st.reason and st.reason ~= "" then UI.text(card, "Основание: " .. st.reason, "SV.Small", C.dim) end

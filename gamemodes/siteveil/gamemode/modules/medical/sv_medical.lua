@@ -488,3 +488,29 @@ SV.DarkRP.chatCommand({command = "giveup", description = "Сдаться в не
     if msg then DarkRP.notify(ply, ok and 0 or 1, 4, msg) end
     return ""
 end)
+
+--[[---------------------------------------------------------------------------
+Medical terminal: incapacitated personnel with sector and remaining time.
+Locations come from the facility's vital-signs monitors, so they work only
+in sectors with power and functional surveillance.
+---------------------------------------------------------------------------]]
+SV.Facility.registerTerminal("medical", {
+    name = "Медицинский терминал", req = {clearance = 1, tags = {"medical"}}, power = 0.5,
+    open = function(ply, ent)
+        local list = {}
+        for p, s in pairs(Medical.state) do
+            if IsValid(p) and p:Alive() and s.down and p.SVChar then
+                local sector = SV.Facility.sectorAt(p:GetPos())
+                local tracked = SV.Facility.devicePowered(sector, "cameras")
+                list[#list + 1] = {name = SV.Chars.displayName(p), sector = tracked and sector or nil, stabilised = s.down.stabilised,
+                    left = not s.down.stabilised and math.max(math.ceil(s.down.deathAt - CurTime()), 0) or nil}
+            end
+        end
+        table.sort(list, function(a, b) return (a.left or 1e9) < (b.left or 1e9) end)
+        local stock = {}
+        for _, id in ipairs({"bandage", "tourniquet", "splint", "painkillers", "medkit", "stimulant", "antiviral"}) do
+            stock[#stock + 1] = {name = C.Items[id].name, count = SV.Supply.stock("medical", id)}
+        end
+        Net.send(ply, "med.terminal", {patients = list, stock = stock})
+    end,
+})

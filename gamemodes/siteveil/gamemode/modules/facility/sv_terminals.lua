@@ -52,3 +52,12 @@ function Terminals.use(ply, ent)
     SV.Bus.emit("terminal.used", {ply = ply, ent = ent, kind = kind, sector = sector})
     def.open(ply, ent)
 end
+
+-- The logistics terminal shows the supply tab (supply loads before facility).
+Facility.registerTerminal("logistics", {
+    name = "Терминал снабжения", req = {clearance = 1}, power = 0.5,
+    open = function(ply)
+        SV.Net.handlers["supply.overview"](ply)
+        SV.Net.send(ply, "ui.openTab", {tab = "supply"})
+    end,
+})

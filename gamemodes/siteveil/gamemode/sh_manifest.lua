@@ -26,6 +26,10 @@ M{name = "config", stage = "boot", files = {
     "config/sh_scp.lua",
     "config/sv_dossiers.lua",
     "config/sv_protocols.lua",
+    "config/sh_evidence.lua",
+    "config/sv_director.lua",
+    "config/sv_hidden.lua",
+    "config/sh_reinforcements.lua",
 }}
 
 M{name = "roles", stage = "boot", deps = {"config"}, files = {
@@ -127,7 +131,7 @@ M{name = "facility", deps = {"mapcfg", "inventory", "access", "supply"}, files =
     "modules/facility/cl_facility.lua",
 }}
 
-M{name = "medical", deps = {"inventory", "characters", "ui_base"}, files = {
+M{name = "medical", deps = {"inventory", "characters", "ui_base", "facility", "supply"}, files = {
     "modules/medical/sh_medical.lua",
     "modules/medical/sv_medical.lua",
     "modules/medical/cl_medical.lua",
@@ -159,6 +163,30 @@ M{name = "research", deps = {"knowledge", "scp", "supply"}, files = {
     "modules/research/sh_research.lua",
     "modules/research/sv_research.lua",
     "modules/research/cl_research.lua",
+}}
+
+M{name = "evidence", deps = {"security", "knowledge", "scp", "facility"}, files = {
+    "modules/evidence/sh_evidence.lua",
+    "modules/evidence/sv_evidence.lua",
+    "modules/evidence/cl_evidence.lua",
+}}
+
+M{name = "director", deps = {"facility", "scp", "supply", "characters"}, files = {
+    "modules/director/sh_director.lua",
+    "modules/director/sv_director.lua",
+    "modules/director/cl_director.lua",
+}}
+
+M{name = "hidden", deps = {"knowledge", "evidence", "security", "mapcfg"}, files = {
+    "modules/hidden/sh_hidden.lua",
+    "modules/hidden/sv_hidden.lua",
+    "modules/hidden/cl_hidden.lua",
+}}
+
+M{name = "reinforcements", deps = {"facility", "characters", "scp"}, files = {
+    "modules/reinforcements/sh_reinforcements.lua",
+    "modules/reinforcements/sv_reinforcements.lua",
+    "modules/reinforcements/cl_reinforcements.lua",
 }}
 
 M{name = "admin", deps = {"facility", "mapcfg", "characters"}, files = {

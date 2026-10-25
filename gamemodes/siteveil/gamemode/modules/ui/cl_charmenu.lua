@@ -38,7 +38,8 @@ local function buildList(parent, data)
     for _, ch in ipairs(data.chars) do
         local card = vgui.Create("DPanel", list)
         card:Dock(TOP)
-        card:SetTall(S(104))
+        local wave = SV.Config.Reinforcements[ch.division] ~= nil
+        card:SetTall(S(wave and 146 or 104))
         card:DockMargin(0, 0, S(6), S(8))
         card.Paint = function(_, w, h)
             UI.drawPanel(0, 0, w, h, data.current == ch.id and C.panelHover or C.panel2)
@@ -61,6 +62,15 @@ local function buildList(parent, data)
         sel:Dock(TOP)
         if data.current == ch.id then sel:SetBlocked("этот персонаж уже на смене") end
         if ch.active and data.current ~= ch.id then sel:SetBlocked("персонаж используется") end
+        if wave then
+            -- Wave divisions also deploy through the reinforcement queue.
+            local cfg = SV.Config.Reinforcements[ch.division]
+            local q = UI.button(btns, "В очередь", function() Net.call("reinf.queue", ch.division, ch.id) end)
+            q:Dock(TOP)
+            q:DockMargin(0, S(8), 0, 0)
+            q:SetTooltip("Очередь группы «" .. cfg.name .. "»: развёртывание при вызове или прибытии")
+            if ch.active then q:SetBlocked("персонаж используется") end
+        end
 
         if not ch.isSCP then
             local del = UI.button(btns, "Удалить", function()

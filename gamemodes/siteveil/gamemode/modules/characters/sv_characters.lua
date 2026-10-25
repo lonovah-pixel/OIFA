@@ -464,7 +464,10 @@ function Chars.unload(ply, reason)
     end
 end
 
-function Chars.select(ply, id)
+--- Selects a character. opts.role (role table) with opts.reinforcement is
+--- used by reinforcement waves to deploy a character directly in a wave role.
+function Chars.select(ply, id, opts)
+    opts = opts or {}
     if not DB.ready then return false, "База данных недоступна." end
     local char = Chars.loadById(id)
     if not char or char.steamid ~= ply:SteamID64() then return false, "Персонаж не найден." end
@@ -479,7 +482,15 @@ function Chars.select(ply, id)
 
     -- Resolve the role to return to.
     local role = Roles.get(char.role)
-    if char.isSCP then
+    if opts.role then
+        role = opts.role
+        ply.SVChar = char
+        local ok, reason = Chars.canTakeRole(ply, role, {reinforcement = opts.reinforcement, restore = true})
+        if not ok then
+            ply.SVChar = nil
+            return false, reason
+        end
+    elseif char.isSCP then
         local ok, reason = Chars.canTakeRole(ply, role, {asSCP = true})
         if not ok then return false, reason end
     else
@@ -511,7 +522,7 @@ function Chars.select(ply, id)
     SV.Audit.log("character", "select", ply, nil, {id = char.id})
 
     ply.SVLastSwitch = CurTime()
-    local ok, msg = Chars.assignRole(ply, role, {reason = "select"})
+    local ok, msg = Chars.assignRole(ply, role, {reason = opts.reinforcement and "reinforcement" or "select", reinforcement = opts.reinforcement})
     if not ok then
         Chars.unload(ply, "error")
         return false, msg
