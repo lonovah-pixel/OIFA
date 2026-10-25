@@ -413,6 +413,10 @@ hook.Add("SiteVeil.CharacterLoaded", "SiteVeil.Inv", function(ply)
 end)
 
 hook.Add("SiteVeil.CharacterUnloading", "SiteVeil.Inv", function(ply, _, reason)
+    -- Leaving while incapacitated or restrained counts as losing the fight.
+    if reason == "disconnect" and hook.Run("SiteVeil.ShouldDropOnDisconnect", ply) == true and Inv.deathDrop then
+        Inv.deathDrop(ply, "disconnect")
+    end
     unload(ply)
     if reason ~= "disconnect" and IsValid(ply) then SV.Sync.setFor(ply, "self", "inv", nil) end
 end)

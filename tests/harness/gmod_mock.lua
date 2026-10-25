@@ -278,6 +278,12 @@ DMG_BULLET, DMG_SLASH, DMG_BURN, DMG_BLAST, DMG_CLUB, DMG_FALL, DMG_GENERIC, DMG
     2, 4, 8, 64, 128, 32, 0, 1, 131072, 1048576, 65536, 256, 262144, 268435456
 IN_ATTACK, IN_ATTACK2, IN_USE, IN_JUMP, IN_DUCK, IN_SPEED, IN_RELOAD, IN_FORWARD, IN_BACK, IN_MOVELEFT, IN_MOVERIGHT, IN_WALK =
     1, 2048, 32, 2, 4, 131072, 8192, 8, 16, 512, 1024, 262144
+DMG_DISSOLVE, DMG_SONIC = 67108864, 1024
+HITGROUP_GENERIC, HITGROUP_HEAD, HITGROUP_CHEST, HITGROUP_STOMACH, HITGROUP_LEFTARM, HITGROUP_RIGHTARM, HITGROUP_LEFTLEG, HITGROUP_RIGHTLEG = 0, 1, 2, 3, 4, 5, 6, 7
+SCREENFADE = {IN = 1, OUT = 2, MODULATE = 4, STAYOUT = 8, PURGE = 16}
+MASK_SHOT_HULL, MASK_NPCWORLDSTATIC, CONTENTS_SOLID = 7, 8, 1
+PLAYER_ATTACK1, ACT_VM_HITCENTER, ACT_VM_MISSCENTER, ACT_VM_PRIMARYATTACK = 5, 180, 181, 182
+function CreateSound() return {Play = function() end, Stop = function() end, ChangeVolume = function() end, IsPlaying = function() return false end, SetSoundLevel = function() end} end
 MOVETYPE_NONE, MOVETYPE_WALK, MOVETYPE_NOCLIP, MOVETYPE_OBSERVER = 0, 2, 8, 10
 SOLID_NONE, SOLID_VPHYSICS, SOLID_BBOX = 0, 6, 2
 SIMPLE_USE, USE_TOGGLE, CONTINUOUS_USE = 3, 3, 0
@@ -511,7 +517,18 @@ function ENT:LocalToWorld(v) return self:GetPos() + v end
 function ENT:GetForward() return self.ang:Forward() end
 function ENT:GetVelocity() return self.velocity or Vector() end
 function ENT:SetVelocity(v) self.velocity = v end
-function ENT:TakeDamageInfo(d) hook.Run("EntityTakeDamage", self, d) end
+function ENT:TakeDamageInfo(d)
+    if hook.Run("EntityTakeDamage", self, d) == true then return end
+    if not self.IsPlayer or not self:IsPlayer() or not self.alive or self.god then return end
+    -- Engine behaviour: damage lowers health; zero health kills.
+    self.health = self.health - math.floor(d:GetDamage())
+    if self.health <= 0 then
+        self.health = 0
+        self.alive = false
+        hook.Run("DoPlayerDeath", self, d:GetAttacker(), d)
+        hook.Run("PlayerDeath", self, d:GetInflictor(), d:GetAttacker())
+    end
+end
 function ENT:TakeDamage(amount, attacker) self:TakeDamageInfo(MOCK.makeDamage({damage = amount, attacker = attacker})) end
 function ENT:IsOnFire() return false end
 function ENT:Extinguish() end

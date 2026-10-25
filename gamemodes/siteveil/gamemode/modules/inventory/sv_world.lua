@@ -177,7 +177,7 @@ end)
 -- Death: everything that is not a kit item of this character drops into a
 -- bag. Kit items stay with the character ("сданы на склад"). Reserve ammo in
 -- the weapons is lost.
-hook.Add("PlayerDeath", "SiteVeil.Inv.DeathDrop", function(ply)
+function Inv.deathDrop(ply, reason)
     local char = ply.SVChar
     local cont = Inv.get(ply)
     if not char or not cont then return end
@@ -187,7 +187,7 @@ hook.Add("PlayerDeath", "SiteVeil.Inv.DeathDrop", function(ply)
         if item.issuedTo ~= char.id and not def.noDrop then drop[#drop + 1] = item end
     end
     for id, offer in pairs(Inv.offers) do
-        if offer.from == ply or offer.to == ply then Inv.cancelOffer(id, "участник погиб") end
+        if offer.from == ply or offer.to == ply then Inv.cancelOffer(id, "участник выбыл") end
     end
     ply:RemoveAllAmmo()
     if #drop == 0 then
@@ -201,7 +201,11 @@ hook.Add("PlayerDeath", "SiteVeil.Inv.DeathDrop", function(ply)
     end
     Inv.changed(ply)
     Inv.spawnWorld(drop, ply:GetPos() + Vector(0, 0, 10), nil, {bag = true, ownerName = SV.Chars.displayName(ply)})
-    SV.Audit.log("inventory", "death.drop", ply, nil, {count = #drop})
+    SV.Audit.log("inventory", "death.drop", ply, nil, {count = #drop, reason = reason})
+end
+
+hook.Add("PlayerDeath", "SiteVeil.Inv.DeathDrop", function(ply)
+    Inv.deathDrop(ply, "death")
 end)
 
 -- Expiry of world items.

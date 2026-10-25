@@ -19,7 +19,7 @@ C.Supply = {
         security = {pistol = 4, ammo_pistol = 20, vest = 4, smg = 2, ammo_smg = 8, bandage = 10, tourniquet = 4, head_bag = 1, revolver = 1, ammo_357 = 4},
         medical = {bandage = 30, tourniquet = 10, splint = 8, stimulant = 6, medkit = 6, painkillers = 12, antiviral = 2, sample_kit = 4},
         engineering = {spare_parts = 20, fuel = 4, filter = 6, coating = 3, gas_mask = 4, flashlight = 4, crowbar = 2},
-        science = {sensor_kit = 4, hs_camera = 2, em_shield = 1, sample_kit = 8, hazmat = 3, gas_mask = 3, lure_record = 1, head_bag = 1},
+        science = {sensor_kit = 4, hs_camera = 2, em_shield = 1, sample_kit = 8, hazmat = 3, gas_mask = 3, lure_record = 1, head_bag = 1, ao_echo = 1, ao_liquid = 1},
         administration = {radio = 6, bandage = 6, medkit = 2, spare_parts = 4, flashlight = 2},
         mtf = {head_bag = 2, gas_mask = 4},
     },
@@ -42,7 +42,7 @@ C.Lockers = {
     engineering = {name = "Инженерный склад", stock = "engineering", divisions = {"engineering", "administration"}, tags = {"engineering"},
         items = {spare_parts = 5, fuel = 2, filter = 2, coating = 2, gas_mask = 1, flashlight = 1, crowbar = 1}},
     science = {name = "Научный склад", stock = "science", divisions = {"science", "administration"}, tags = {"science"},
-        items = {sensor_kit = 2, hs_camera = 1, em_shield = 1, sample_kit = 4, hazmat = 1, gas_mask = 1, lure_record = 1, head_bag = 1}},
+        items = {sensor_kit = 2, hs_camera = 1, em_shield = 1, sample_kit = 4, hazmat = 1, gas_mask = 1, lure_record = 1, head_bag = 1, ao_echo = 1, ao_liquid = 1}},
     general = {name = "Хозяйственный склад", stock = "administration", divisions = nil, tags = nil,
         items = {flashlight = 1, bandage = 2}},
 }

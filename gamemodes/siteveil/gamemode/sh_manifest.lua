@@ -21,6 +21,11 @@ M{name = "config", stage = "boot", files = {
     "config/sh_comms.lua",
     "config/sh_supply.lua",
     "config/sh_facility.lua",
+    "config/sh_medical.lua",
+    "config/sh_security.lua",
+    "config/sh_scp.lua",
+    "config/sv_dossiers.lua",
+    "config/sv_protocols.lua",
 }}
 
 M{name = "roles", stage = "boot", deps = {"config"}, files = {
@@ -45,6 +50,7 @@ M{name = "core", deps = {"config"}, files = {
     "core/sh_net.lua",
     "core/sh_sync.lua",
     "core/sh_actions.lua",
+    "core/sh_movement.lua",
     "core/sh_startup.lua",
 }}
 
@@ -119,6 +125,40 @@ M{name = "facility", deps = {"mapcfg", "inventory", "access", "supply"}, files =
     "modules/facility/sv_terminals.lua",
     "modules/facility/sv_states.lua",
     "modules/facility/cl_facility.lua",
+}}
+
+M{name = "medical", deps = {"inventory", "characters", "ui_base"}, files = {
+    "modules/medical/sh_medical.lua",
+    "modules/medical/sv_medical.lua",
+    "modules/medical/cl_medical.lua",
+}}
+
+M{name = "security", deps = {"access", "medical", "inventory"}, files = {
+    "modules/security/sh_security.lua",
+    "modules/security/sv_security.lua",
+    "modules/security/cl_security.lua",
+}}
+
+M{name = "knowledge", deps = {"access", "facility", "inventory"}, files = {
+    "modules/knowledge/sh_knowledge.lua",
+    "modules/knowledge/sv_knowledge.lua",
+    "modules/knowledge/cl_knowledge.lua",
+}}
+
+M{name = "scp", deps = {"facility", "medical", "security", "knowledge"}, files = {
+    "modules/scp/sh_scp.lua",
+    "modules/scp/sv_scp.lua",
+    "modules/scp/sv_scp173.lua",
+    "modules/scp/sv_scp106.lua",
+    "modules/scp/sv_scp049.lua",
+    "modules/scp/sv_scp096.lua",
+    "modules/scp/cl_scp.lua",
+}}
+
+M{name = "research", deps = {"knowledge", "scp", "supply"}, files = {
+    "modules/research/sh_research.lua",
+    "modules/research/sv_research.lua",
+    "modules/research/cl_research.lua",
 }}
 
 M{name = "admin", deps = {"facility", "mapcfg", "characters"}, files = {
