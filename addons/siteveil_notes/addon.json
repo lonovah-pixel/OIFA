@@ -1,0 +1,10 @@
+{
+    "title": "SITE-VEIL: Записки и доска объявлений",
+    "type": "gamemode",
+    "tags": [
+        "roleplay"
+    ],
+    "ignore": [
+        "*.md"
+    ]
+}

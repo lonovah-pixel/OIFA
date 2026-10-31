@@ -148,7 +148,7 @@ local function tick()
         local head = scp:EyePos()
         local dark = Facility.power(Facility.sectorAt(scp:GetPos())) < 0.3
         for _, p in ipairs(player.GetAll()) do
-            if p ~= scp and p:Alive() and p.SVChar and not Roles.isSCP(p) and not st.data.targets[p] and not Medical.isIncapacitated(p) and seesFace(p, scp, head, dark) then
+            if p ~= scp and p:Alive() and p.SVChar and not Roles.isSCP(p) and not st.data.targets[p] and not Medical.isIncapacitated(p) and not SCP.isBlinded(p) and seesFace(p, scp, head, dark) then
                 S096.addTarget(p, "view")
             end
         end

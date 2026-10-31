@@ -1,0 +1,10 @@
+{
+    "title": "SITE-VEIL: Личное дело",
+    "type": "gamemode",
+    "tags": [
+        "roleplay"
+    ],
+    "ignore": [
+        "*.md"
+    ]
+}

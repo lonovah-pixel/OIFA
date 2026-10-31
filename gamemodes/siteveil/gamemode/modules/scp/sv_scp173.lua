@@ -92,7 +92,7 @@ function S173.observers(scp)
             local eye = p:EyePos()
             local dsq = eye:DistToSqr(center)
             updateBlink(p, now, dsq <= 2000 * 2000)
-            if dsq <= rangeSqr and not isBlinking(p, now) and not Medical.isIncapacitated(p) then
+            if dsq <= rangeSqr and not isBlinking(p, now) and not Medical.isIncapacitated(p) and not SCP.isBlinded(p) then
                 local dir = center - eye
                 dir:Normalize()
                 local facing = p:GetAimVector():Dot(dir) >= K.observeDot and (not dark or dsq <= darkSqr or p:FlashlightIsOn())

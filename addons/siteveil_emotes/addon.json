@@ -1,0 +1,10 @@
+{
+    "title": "SITE-VEIL: Жесты и действия",
+    "type": "gamemode",
+    "tags": [
+        "roleplay"
+    ],
+    "ignore": [
+        "*.md"
+    ]
+}

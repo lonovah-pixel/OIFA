@@ -1,0 +1,10 @@
+{
+    "title": "SITE-VEIL: Светошумовая граната",
+    "type": "gamemode",
+    "tags": [
+        "roleplay"
+    ],
+    "ignore": [
+        "*.md"
+    ]
+}

@@ -378,3 +378,42 @@ function UI.confirm(title, text, onYes, typedWord)
     no:DockMargin(0, 0, S(8), 0)
     return f
 end
+
+--[[---------------------------------------------------------------------------
+Text input dialog: onSubmit(text) is called with the entered text.
+---------------------------------------------------------------------------]]
+function UI.prompt(title, text, hint, onSubmit, opts)
+    opts = opts or {}
+    local f = vgui.Create("SVFrame")
+    f:SetHeader(title)
+    f:SetSize(S(520), S(opts.multiline and 320 or 230))
+    f:Center()
+    f:MakePopup()
+    if text then UI.text(f, text, "SV.Small", C.dim) end
+    local entry = vgui.Create("SVEntry", f)
+    entry:Dock(TOP)
+    entry:SetHint(hint or "")
+    if opts.multiline then
+        entry:SetMultiline(true)
+        entry:SetTall(S(110))
+    end
+    if opts.default then entry:SetValue(opts.default) end
+    local row = UI.row(f, S(36))
+    row:Dock(BOTTOM)
+    local ok = UI.button(row, opts.submit or "Отправить", function()
+        local value = entry:GetValue()
+        if value == "" then
+            UI.notify("Поле не заполнено.", 1)
+            return
+        end
+        f:Close()
+        onSubmit(value)
+    end, opts.style or "primary")
+    ok:Dock(RIGHT)
+    ok:SetWide(S(160))
+    local cancel = UI.button(row, "Отмена", function() f:Close() end)
+    cancel:Dock(RIGHT)
+    cancel:SetWide(S(120))
+    cancel:DockMargin(0, 0, S(8), 0)
+    return f
+end

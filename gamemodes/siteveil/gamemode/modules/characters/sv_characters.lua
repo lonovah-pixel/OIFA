@@ -591,6 +591,8 @@ function Chars.promotionStatus(char)
     if needsApproval then
         table.insert(conditions, {text = "Требуется приказ старшего по званию (звание выше «" .. div.ranks[nextRank] .. "») или администрации", met = false, approval = true})
     end
+    -- Addons may add conditions ({text, met}) to the list.
+    hook.Run("SiteVeil.PromotionConditions", char, conditions, nextRank)
     local possible = true
     for _, c in ipairs(conditions) do
         if not c.met and not c.approval then possible = false end

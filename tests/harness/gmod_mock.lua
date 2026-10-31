@@ -285,7 +285,7 @@ SCREENFADE = {IN = 1, OUT = 2, MODULATE = 4, STAYOUT = 8, PURGE = 16}
 MASK_SHOT_HULL, MASK_NPCWORLDSTATIC, CONTENTS_SOLID = 7, 8, 1
 PLAYER_ATTACK1, ACT_VM_HITCENTER, ACT_VM_MISSCENTER, ACT_VM_PRIMARYATTACK = 5, 180, 181, 182
 function CreateSound() return {Play = function() end, Stop = function() end, ChangeVolume = function() end, IsPlaying = function() return false end, SetSoundLevel = function() end} end
-MOVETYPE_NONE, MOVETYPE_WALK, MOVETYPE_NOCLIP, MOVETYPE_OBSERVER = 0, 2, 8, 10
+MOVETYPE_NONE, MOVETYPE_WALK, MOVETYPE_NOCLIP, MOVETYPE_OBSERVER, MOVETYPE_VPHYSICS = 0, 2, 8, 10, 6
 SOLID_NONE, SOLID_VPHYSICS, SOLID_BBOX = 0, 6, 2
 SIMPLE_USE, USE_TOGGLE, CONTINUOUS_USE = 3, 3, 0
 RENDERMODE_NORMAL, RENDERMODE_TRANSALPHA = 0, 4
@@ -580,6 +580,8 @@ function ENT:SetKeyValue() end
 function ENT:IsSolid() return true end
 function ENT:SetCustomCollisionCheck() end
 function ENT:GetCollisionGroup() return 0 end
+function ENT:SetModelScale(s) self.modelScale = s end
+function ENT:GetModelScale() return self.modelScale or 1 end
 
 ents = {}
 function ENT:NetworkVar(_, _, name)

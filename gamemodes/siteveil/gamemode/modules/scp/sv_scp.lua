@@ -149,6 +149,18 @@ end
 --[[---------------------------------------------------------------------------
 Helpers shared by SCP implementations
 ---------------------------------------------------------------------------]]
+--- Temporary blindness (flashbangs, addons): a blinded person observes
+--- nothing - no observation of SCP-173, no sight of SCP-096's face.
+SCP.blinded = SCP.blinded or {}
+function SCP.blind(ply, seconds)
+    SCP.blinded[ply] = math.max(SCP.blinded[ply] or 0, CurTime() + seconds)
+end
+function SCP.isBlinded(ply)
+    local t = SCP.blinded[ply]
+    return t ~= nil and CurTime() < t
+end
+hook.Add("PlayerDisconnected", "SiteVeil.SCP.Blind", function(ply) SCP.blinded[ply] = nil end)
+
 --- Safe zones (map config) forbid offensive SCP abilities.
 function SCP.inSafeZone(pos)
     return SV.MapCfg.zoneAt(pos, "safe") ~= nil

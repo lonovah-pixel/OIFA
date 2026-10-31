@@ -96,7 +96,7 @@ local function check096(ply, cam)
     local S096 = SV.SCP.S096
     local scp = SV.SCP.playerOf("scp096")
     local st = SV.SCP.get("scp096")
-    if not S096 or not scp or not scp:Alive() or not st or st.data.bagged then return end
+    if not S096 or not scp or not scp:Alive() or not st or st.data.bagged or SV.SCP.isBlinded(ply) then return end
     local masked = st.data.maskedUntil and CurTime() < st.data.maskedUntil
     if masked and SV.SCP.inCell("scp096", cam:GetPos()) then return end
     if showsFace(cam, scp) then S096.addTarget(ply, "cctv") end
