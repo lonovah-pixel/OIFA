@@ -49,10 +49,13 @@ function SCP.playerOf(id)
     return nil
 end
 
-function SCP.breachedCount()
+--- Breached objects. Objects registered with minor = true (harmless ones)
+--- are counted only when includeMinor is set.
+function SCP.breachedCount(includeMinor)
     local n = 0
-    for _, st in pairs(SCP.state) do
-        if st.breached then n = n + 1 end
+    for id, st in pairs(SCP.state) do
+        local def = SCP.defs[id]
+        if st.breached and (includeMinor or not (def and def.minor)) then n = n + 1 end
     end
     return n
 end
@@ -310,7 +313,7 @@ function SCP.breach(id, how)
     SV.Audit.log("scp", "breach", ply, nil, {scp = id, how = how})
     if def.onBreach then def.onBreach(st, ply) end
     publish(id)
-    SV.Bus.emit("scp.breached", {scp = id, name = def.name, how = how})
+    SV.Bus.emit("scp.breached", {scp = id, name = def.name, how = how, minor = def.minor or nil})
 end
 
 function SCP.recontain(id, by, how)

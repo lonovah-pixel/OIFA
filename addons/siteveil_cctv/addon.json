@@ -1,0 +1,6 @@
+{
+    "title": "SITE-VEIL: Видеонаблюдение",
+    "type": "gamemode",
+    "tags": ["roleplay"],
+    "ignore": ["*.md"]
+}

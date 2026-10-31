@@ -73,6 +73,13 @@ UI.registerTab{
         UI.text(card, string.format("БД: %s, запросов %d, ошибок %d, самый долгий %.2f мс", st.db.ready and "готова" or "НЕДОСТУПНА", st.db.queries, st.db.errors, st.db.slowestMs), "SV.Small", st.db.ready and C.text or C.danger)
         UI.text(card, "Интеграция DarkRP: " .. (st.darkrpVerified and "проверена" or "есть проблемы"), "SV.Small", st.darkrpVerified and C.ok or C.danger)
         for _, e in ipairs(st.loaderErrors or {}) do UI.text(card, "Ошибка загрузки: " .. e, "SV.Tiny", C.danger) end
+        local addons = st.addons or {}
+        local states = {loaded = {"работает", C.ok}, disabled = {"отключён", C.faint}, error = {"ошибка", C.danger}}
+        UI.text(card, "Аддоны SITE-VEIL: " .. (#addons == 0 and "не установлены" or #addons), "SV.Small")
+        for _, a in ipairs(addons) do
+            local s = states[a.status] or {a.status, C.warn}
+            UI.text(card, "  " .. a.name .. " (" .. a.id .. " " .. (a.version or "?") .. ") — " .. s[1] .. (a.error and (": " .. a.error) or ""), "SV.Tiny", s[2])
+        end
         for _, e in ipairs(st.mapReport and st.mapReport.errors or {}) do UI.text(card, "Карта: " .. e, "SV.Tiny", C.danger) end
         for _, w in ipairs(st.mapReport and st.mapReport.warnings or {}) do UI.text(card, "Карта: " .. w, "SV.Tiny", C.warn) end
         local perf = UI.card(scroll, "Диагностика производительности")

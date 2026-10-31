@@ -25,12 +25,15 @@ GAMEMODES = os.path.join(ROOT, "gamemodes")
 HARNESS = os.path.dirname(os.path.abspath(__file__))
 TESTS = os.path.join(ROOT, "tests", "server")
 CLIENT_TESTS = os.path.join(ROOT, "tests", "client")
+ADDONS = os.path.join(ROOT, "addons")
+ADDON_FIXTURES = os.path.join(ROOT, "tests", "fixtures", "addons")
 # Push payloads recorded by server tests, replayed by the client smoke test.
 FIXTURES = os.path.join(ROOT, "tests", ".fixtures", "pushes.json")
 
 
 class Host:
-    def __init__(self):
+    def __init__(self, extra_roots=None):
+        self.extra_roots = extra_roots or []
         self.db = sqlite3.connect(":memory:", isolation_level=None)
         self.data = {}
         self.lua = lupa_impl.LuaRuntime(unpack_returned_tuples=True)
@@ -114,16 +117,52 @@ class Host:
         except (ValueError, TypeError):
             return None
 
+    # The Lua virtual filesystem of GMod: gamemodes/ plus every addon's lua/.
+    def lua_roots(self):
+        roots = [GAMEMODES]
+        for base in [ADDONS] + self.extra_roots:
+            if os.path.isdir(base):
+                for name in sorted(os.listdir(base)):
+                    lua = os.path.join(base, name, "lua")
+                    if os.path.isdir(lua):
+                        roots.append(lua)
+        return roots
+
+    def resolve(self, path):
+        for root in self.lua_roots():
+            full = os.path.normpath(os.path.join(root, path))
+            if full.startswith(root) and os.path.isfile(full):
+                return full
+        return None
+
     def read(self, path):
-        full = os.path.normpath(os.path.join(GAMEMODES, path))
-        if not full.startswith(GAMEMODES) or not os.path.isfile(full):
+        full = self.resolve(path)
+        if not full:
             return None
         with open(full, encoding="utf-8") as fh:
             return fh.read()
 
     def exists(self, path):
-        full = os.path.normpath(os.path.join(GAMEMODES, path))
-        return full.startswith(GAMEMODES) and os.path.isfile(full)
+        return self.resolve(path) is not None
+
+    def find(self, pattern):
+        """file.Find(pattern, "LUA") for patterns like "dir/*" or "dir/*.lua"."""
+        import fnmatch
+        base, _, mask = pattern.rpartition("/")
+        files, dirs = set(), set()
+        for root in self.lua_roots():
+            full = os.path.normpath(os.path.join(root, base))
+            if not full.startswith(root) or not os.path.isdir(full):
+                continue
+            for name in os.listdir(full):
+                if fnmatch.fnmatch(name, mask):
+                    (dirs if os.path.isdir(os.path.join(full, name)) else files).add(name)
+        ft, dt = self.lua.table(), self.lua.table()
+        for i, n in enumerate(sorted(files)):
+            ft[i + 1] = n
+        for i, n in enumerate(sorted(dirs)):
+            dt[i + 1] = n
+        return ft, dt
 
     def data_read(self, path):
         return self.data.get(path)
@@ -157,6 +196,7 @@ class Host:
         g["__host_data_write"] = self.data_write
         g["__host_data_exists"] = self.data_exists
         g["__host_list"] = self.list_dirs
+        g["__host_find"] = self.find
         g["__host_fixtures"] = lambda: open(FIXTURES, encoding="utf-8").read() if os.path.exists(FIXTURES) else None
         with open(os.path.join(HARNESS, "gmod_mock.lua"), encoding="utf-8") as fh:
             self.lua.execute(fh.read())
@@ -186,7 +226,9 @@ def save_push_samples(host):
 
 
 def run_file(path):
-    host = Host()
+    # Broken test addons are installed only for the loader robustness test.
+    extra = [ADDON_FIXTURES] if os.path.basename(path).startswith("test_addon_loader") else []
+    host = Host(extra)
     client = os.path.basename(os.path.dirname(os.path.abspath(path))) == "client"
     try:
         host.install(client)

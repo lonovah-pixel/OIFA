@@ -81,6 +81,7 @@ function Admin.status()
     return {
         version = SV.Version,
         loaderErrors = SV.Loader.errors,
+        addons = SV.Addons.describe(),
         mapSource = SV.MapCfg.source,
         mapReport = SV.MapCfg.report,
         darkrpVerified = Bridge.verified,

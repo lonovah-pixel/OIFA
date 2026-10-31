@@ -28,6 +28,26 @@ for _, class in ipairs(__host_list("siteveil/entities/weapons")) do
     weapons.stored[class] = SWEP
     SWEP = nil
 end
+-- Entities and weapons shipped by addons (garrysmod/addons/*/lua/entities|weapons).
+for _, kind in ipairs({"entities", "weapons"}) do
+    local _, dirs = file.Find(kind .. "/*", "LUA")
+    for _, class in ipairs(dirs) do
+        local path = kind .. "/" .. class .. "/shared.lua"
+        if file.Exists(path, "LUA") then
+            if kind == "entities" then
+                ENT = {}
+                include(path)
+                scripted_ents.Register(ENT, class)
+                ENT = nil
+            else
+                SWEP = {Primary = {}, Secondary = {}}
+                include(path)
+                weapons.stored[class] = SWEP
+                SWEP = nil
+            end
+        end
+    end
+end
 SiteVeil.Startup()
 hook.Run("InitPostEntity")
 MOCK.advance(2)

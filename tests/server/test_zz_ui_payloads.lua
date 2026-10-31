@@ -39,6 +39,9 @@ TEST("record window payloads", function()
         point("t_infra", "terminal", 500, {terminal = "infrastructure"}),
         point("t_logistics", "terminal", 500, {terminal = "logistics"}),
         point("panel173", "panel", 500, {scp = "scp173"}),
+        point("t_intercom", "terminal", 500, {terminal = "intercom"}),
+        point("t_cctv", "terminal", 500, {terminal = "cctv"}),
+        point("cam1", "camera", 900, {name = "Камера 1"}),
     }, doors = {}}
     MapCfg.reindex()
     Facility.sectors, Facility.nodes = {}, {}
@@ -80,12 +83,14 @@ TEST("record window payloads", function()
     MOCK.rpc(eng, "sec.checkId", doc)
     local card = SV.Inv.find(eng, function(it) return it.id == "id_card" end)[1]
     if card then MOCK.rpc(eng, "inv.inspect", card.uid) end
+    use(director, S.t_intercom)
+    use(director, S.t_cctv)
     SV.Admin.setDuty(director, true)
     MOCK.rpc(director, "admin.status")
     MOCK.rpc(director, "director.status")
     MOCK.rpc(director, "access.log", S.t_research)
     for _, ev in ipairs({"research.protocols", "research.history", "evidence.terminal", "case.list", "med.terminal", "know.terminal", "know.list",
-        "infra.overview", "infra.node", "supply.overview", "scp.panel", "med.report", "facility.status", "char.roles", "admin.status", "director.status"}) do
+        "infra.overview", "infra.node", "supply.overview", "scp.panel", "med.report", "facility.status", "char.roles", "admin.status", "director.status", "intercom.open", "cctv.open"}) do
         expect(MOCK.pushSamples[ev], "no payload recorded for " .. ev)
     end
 end)

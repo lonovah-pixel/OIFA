@@ -1,0 +1,6 @@
+{
+    "title": "SITE-VEIL: Обеззараживание сектора",
+    "type": "gamemode",
+    "tags": ["roleplay"],
+    "ignore": ["*.md"]
+}

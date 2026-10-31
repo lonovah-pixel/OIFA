@@ -15,9 +15,9 @@ run_lint() {
         return 1
     fi
     echo "== glualint"
-    "$GLUALINT" lint gamemodes/siteveil tests || return 1
+    "$GLUALINT" lint gamemodes/siteveil addons tests || return 1
     # glualint prints warnings but exits 0; treat any output as failure.
-    if [ -n "$("$GLUALINT" lint gamemodes/siteveil tests 2>&1)" ]; then return 1; fi
+    if [ -n "$("$GLUALINT" lint gamemodes/siteveil addons tests 2>&1)" ]; then return 1; fi
     echo "glualint: clean"
 }
 

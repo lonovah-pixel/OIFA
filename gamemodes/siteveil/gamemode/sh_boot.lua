@@ -23,9 +23,11 @@ SV.Loaded = SV.Loaded or {}
 if SERVER then
     AddCSLuaFile(SV.Root .. "sh_loader.lua")
     AddCSLuaFile(SV.Root .. "sh_manifest.lua")
+    AddCSLuaFile(SV.Root .. "sh_addons.lua")
 end
 
 include(SV.Root .. "sh_loader.lua")
 include(SV.Root .. "sh_manifest.lua")
+include(SV.Root .. "sh_addons.lua")  -- discovers lua/siteveil_addons/*
 
 SV.Loader.loadStage("boot")

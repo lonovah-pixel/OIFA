@@ -82,9 +82,11 @@ function Loader.loadStage(stage)
                     Loader.loadFile(path)
                 end
                 SV.Loaded[def.name] = true
+                if Loader.afterModule then Loader.afterModule(def.name) end
             end
         end
     end
+    if Loader.afterStage then Loader.afterStage(stage) end
 end
 
 --- Returns the manifest as a list of {name, deps} for diagnostics and tests.

@@ -251,6 +251,34 @@ kinds.callout = {
     end,
 }
 
+-- Events defined by addons: def.custom = {prepare(run) -> bool, apply(run),
+-- check(run) -> bool, tick(run), success(run), fail(run)}; run.sector and
+-- run.pos are set by prepare.
+kinds.custom = {
+    prepare = function(run) return run.def.custom.prepare(run) end,
+    apply = function(run) if run.def.custom.apply then run.def.custom.apply(run) end end,
+    tick = function(run) if run.def.custom.tick then run.def.custom.tick(run) end end,
+    check = function(run) return run.def.custom.check(run) == true end,
+    success = function(run) if run.def.custom.success then run.def.custom.success(run) end end,
+    fail = function(run) if run.def.custom.fail then run.def.custom.fail(run) end end,
+}
+
+--- Adds an event to the catalogue (addons). Same fields as config/sv_director.lua.
+function Director.registerEvent(def)
+    assert(isstring(def.id) and kinds[def.kind], "director event needs an id and a known kind")
+    if Director.defs[def.id] then
+        for i, e in ipairs(C.DirectorEvents) do
+            if e.id == def.id then table.remove(C.DirectorEvents, i) break end
+        end
+    end
+    def.solvers = def.solvers or {}
+    def.cooldown = def.cooldown or 1200
+    def.duration = def.duration or 300
+    def.weight = def.weight or 1
+    table.insert(C.DirectorEvents, def)
+    Director.defs[def.id] = def
+end
+
 kinds.supply = {
     prepare = kinds.callout.prepare,
     apply = function() end,
@@ -272,7 +300,7 @@ local function publish()
         list[#list + 1] = {
             id = id, name = run.def.name, text = run.taskText or run.def.text, solvers = divs, warning = run.phase == "warn",
             pos = run.pos and {math.Round(run.pos.x, -1), math.Round(run.pos.y, -1), math.Round(run.pos.z, -1)} or nil,
-            endsAt = run.endsAt, progress = run.progress and run.def.params.hold and math.floor(run.progress / run.def.params.hold * 100) or nil,
+            endsAt = run.endsAt, progress = run.percent or (run.progress and run.def.params and run.def.params.hold and math.floor(run.progress / run.def.params.hold * 100)) or nil,
         }
     end
     table.sort(list, function(a, b) return a.id < b.id end)

@@ -30,6 +30,20 @@ local Inv = SV.Inv
 Research.protocols = {}
 for _, p in ipairs(C.Protocols) do Research.protocols[p.id] = p end
 
+--- Adds a research protocol (addons). Same fields as config/sv_protocols.lua.
+function Research.registerProtocol(p)
+    assert(isstring(p.id) and isstring(p.subject) and istable(p.outcomes) and istable(p.steps), "invalid protocol")
+    if Research.protocols[p.id] then
+        for i, x in ipairs(C.Protocols) do
+            if x.id == p.id then table.remove(C.Protocols, i) break end
+        end
+    end
+    p.participants = p.participants or {}
+    p.equipment = p.equipment or {}
+    table.insert(C.Protocols, p)
+    Research.protocols[p.id] = p
+end
+
 Research.active = Research.active or {}      -- id -> experiment
 Research.byPlayer = Research.byPlayer or {}  -- ply -> experiment
 Research.lastRun = Research.lastRun or {}    -- protocol -> CurTime of last completion

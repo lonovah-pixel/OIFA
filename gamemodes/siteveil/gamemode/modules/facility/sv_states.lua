@@ -196,6 +196,12 @@ end
 Automatic transitions and expiry
 ---------------------------------------------------------------------------]]
 SV.Bus.on("scp.breached", "facility", function(data)
+    if data.minor then
+        -- Harmless object: a local alert in its sector, not a facility breach.
+        local sector = SV.SCP.cellSector(data.scp)
+        if sector then Facility.setAlert(sector, nil, true, (data.name or "Объект") .. " вне камеры") end
+        return
+    end
     local st = Facility.state.id
     if st == "normal" or st == "recovery" then
         Facility.setState("breach", nil, (data.name or "Объект") .. " покинул камеру содержания.")

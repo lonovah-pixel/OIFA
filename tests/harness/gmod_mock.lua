@@ -331,7 +331,15 @@ function file.Write(path, content) __host_data_write(path, content) end
 function file.Append(path, content) __host_data_write(path, (__host_data_read(path) or "") .. content) end
 function file.CreateDir() end
 function file.Delete(path) __host_data_write(path, nil) end
-function file.Find() return {}, {} end
+function file.Find(pattern, where)
+    if where == "LUA" then return __host_find(pattern) end
+    return {}, {}
+end
+function CompileFile(path)
+    local src = __host_read(path)
+    if not src then return nil end
+    return loadstring(src, "@" .. path)
+end
 
 function include(path)
     local src = __host_read(path)
@@ -771,7 +779,8 @@ function PLY:ExitVehicle() end
 function PLY:Crouching() return false end
 function PLY:IsSpeaking() return self.speaking or false end
 function PLY:Ping() return 30 end
-function PLY:SetViewEntity() end
+function PLY:SetViewEntity(e) self.viewEntity = e end
+function PLY:GetViewEntity() return self.viewEntity or self end
 function PLY:ScreenFade() end
 function PLY:SetDSP() end
 function PLY:Spectate() end

@@ -96,7 +96,10 @@ end
 
 hook.Add("SiteVeil.RoleSpawn", "SiteVeil.Comms", function(ply) Comms.refresh(ply, true) end)
 hook.Add("SiteVeil.InventoryChanged", "SiteVeil.Comms", function(ply) Comms.refresh(ply, false) end)
-hook.Add("PlayerDisconnected", "SiteVeil.Comms", function(ply) Comms.radio[ply] = nil end)
+hook.Add("PlayerDisconnected", "SiteVeil.Comms", function(ply)
+    Comms.radio[ply] = nil
+    if Comms.broadcasting then Comms.broadcasting[ply] = nil end
+end)
 hook.Add("PlayerDeath", "SiteVeil.Comms", function(ply)
     local st = Comms.radio[ply]
     if st then st.ptt = false end
@@ -275,8 +278,17 @@ end)
 
 local mute = {scp173 = true, scp096 = true}
 
+--- Facility-wide voice broadcast (intercom and similar addons): talker is
+--- heard by everybody with a character until untilTime (nil stops it).
+Comms.broadcasting = Comms.broadcasting or {}
+function Comms.setBroadcast(ply, untilTime)
+    Comms.broadcasting[ply] = untilTime
+end
+
 function GM:PlayerCanHearPlayersVoice(listener, talker)
     if not talker:Alive() or not talker.SVChar or not listener.SVChar then return false end
+    local b = Comms.broadcasting[talker]
+    if b and CurTime() < b then return true, false end
     local role = Roles.ofPlayer(talker)
     if role and mute[role.id] then return false end
     local local_ = canHearLocal[listener]

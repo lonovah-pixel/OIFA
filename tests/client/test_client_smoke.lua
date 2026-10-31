@@ -89,3 +89,19 @@ TEST("every push handler accepts the payloads recorded by the server tests", fun
     io.write(string.format("       replayed %d payloads of %d events\n", handled, events))
     if #errors > 0 then error(table.concat(errors, "\n")) end
 end)
+
+TEST("addon scoreboard opens, refreshes and closes", function()
+    local a = MOCK.addPlayer({name = "Other"})
+    a:setDarkRPVar("sv_div", "chaos")
+    a:setDarkRPVar("rpname", "Тайный Агент")
+    local b = MOCK.addPlayer({name = "Guard"})
+    b:setDarkRPVar("sv_div", "security")
+    b:setDarkRPVar("sv_rank", 2)
+    expect(GAMEMODE:ScoreboardShow() == true, "scoreboard not shown")
+    local groups = SV.Scoreboard.groups()
+    expect(#groups >= 2, "groups not built")
+    UI.scoreboard.nextRefresh = 0
+    UI.scoreboard:Think()
+    expect(GAMEMODE:ScoreboardHide() == true)
+    expect(hook.GetTable().ScoreboardShow == nil or hook.GetTable().ScoreboardShow.FAdmin_scoreboard == nil, "FAdmin scoreboard hook kept")
+end)

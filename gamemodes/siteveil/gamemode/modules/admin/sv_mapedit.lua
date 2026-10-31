@@ -14,6 +14,9 @@ local MapCfg = SV.MapCfg
 local Net = SV.Net
 local U = SV.Util
 
+-- Editable properties per zone/point kind. Public so that addons that add
+-- kinds (MapCfg.zoneKinds / pointKinds) can allow their properties.
+MapCfg.editorProps = MapCfg.editorProps or {}
 local allowedProps = {
     sector = {type = true, priority = true, demand = true},
     cell = {scp = true}, evac = {}, detention = {}, pocket = {}, lure = {}, testchamber = {}, safe = {},
@@ -26,7 +29,7 @@ local doorProps = {name = true, clearance = true, tags = true, tagMode = true, s
     failMode = true, autoClose = true, lockdownExempt = true}
 
 local function cleanProps(kind, raw)
-    local allow = allowedProps[kind] or {}
+    local allow = MapCfg.editorProps[kind] or allowedProps[kind] or {}
     local out = {}
     for k, v in pairs(raw or {}) do
         if allow[k] then
