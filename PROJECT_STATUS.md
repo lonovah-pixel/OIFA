@@ -16,10 +16,11 @@
 | 6 | «След инцидента», «Директор напряжения» (12 событий), «Двойные задачи», подкрепление МОГ/Хаоса, терминалы снабжения и медицины | ✔ | ✔ | ✔ 8 | ✖ |
 | 7 | панель администратора, русские фразы DarkRP, экспорт разметки в Lua, справка, документация | ✔ | ✔ | ✔ 4 | ✖ |
 | А | система аддонов и 6 аддонов: интерком, обеззараживание, тесла-ворота, видеонаблюдение, SCP-999, табло | ✔ | ✔ | ✔ 3 (загрузчик) + 7 (аддоны) | ✖ |
+| А3 | SCP-939, хирургия, учения, полиграф, мастерская, глушилка | ✔ | ✔ | ✔ 7 | ✖ |
 | А2 | 6 аддонов взаимодействия: жесты, записки и доски, работы класса D, аварийные лампы, светошумовая граната, личное дело | ✔ | ✔ | ✔ 8 | ✖ |
-| — | клиентский код всех этапов и аддонов | ✔ | ✔ | дымовой тест: 5 (загрузка, HUD/вкладки, табло, 89 реальных ответов сервера через 54 обработчика) | ✖ |
+| — | клиентский код всех этапов и аддонов | ✔ | ✔ | дымовой тест: 5 (загрузка, HUD/вкладки, табло, 104 реальных ответа сервера через 62 обработчика) | ✖ |
 
-Итого 123 автоматических теста, все проходят; glualint 1.30.0 — без замечаний по режиму, аддонам и тестам (`tools/check.sh`).
+Итого 130 автоматических тестов, все проходят; glualint 1.30.0 — без замечаний по режиму, аддонам и тестам (`tools/check.sh`).
 
 ## Как проверялось
 
@@ -39,6 +40,7 @@
 - `tests/` — стенд (`harness/gmod_mock.lua`, `client_stubs.lua`, `boot.lua`, `runner.py`), серверные тесты `server/test_stage1..7.lua`, `test_zz_ui_payloads.lua`, клиентский `client/test_client_smoke.lua`.
 - `tools/` — `check.sh`, `install_glualint.sh`, `darkrp.lock`, `glualint.darkrp.json`; `glualint.json`; `server/server.cfg.example`.
 - `gamemodes/siteveil/gamemode/sh_addons.lua` — загрузчик аддонов; точки расширения в `modules/admin/sv_mapedit.lua`, `modules/comms/sv_radio.lua`, `modules/director/sv_director.lua`, `modules/research/sv_research.lua`, `modules/scp/sv_scp.lua`, `modules/facility/sv_states.lua`, `modules/admin/sv_admin.lua`, `cl_admin.lua`.
+- `addons/siteveil_scp939`, `siteveil_surgery`, `siteveil_drills`, `siteveil_polygraph`, `siteveil_crafting`, `siteveil_jammer`; тест `tests/server/test_addons3.lua`; хук `SiteVeil.RadioQuality` в `modules/comms/sv_radio.lua`.
 - `addons/siteveil_emotes`, `siteveil_notes`, `siteveil_labor`, `siteveil_alarms`, `siteveil_flashbang`, `siteveil_servicerecord`; тест `tests/server/test_addons2.lua`.
 - `addons/siteveil_intercom`, `siteveil_decontamination`, `siteveil_tesla`, `siteveil_cctv`, `siteveil_scp999`, `siteveil_scoreboard`; тесты `tests/server/test_addon_loader.lua`, `test_addons.lua`, тестовые аддоны `tests/fixtures/addons/`.
 - Документация: `README.md`, `ARCHITECTURE.md`, `ADDONS.md`, `DARKRP_CHANGES.md`, `ADMIN_GUIDE.md`, `PLAYER_GUIDE.md`, `BALANCE.md`, `TESTING.md`, `THIRD_PARTY.md`, `CHANGELOG.md`, этот файл.
@@ -59,6 +61,8 @@
 12. **Модели-заглушки**: у SCP-999 нет подходящей модели в Garry's Mod — используется уменьшенная окрашенная модель HL2.
 13. **Мини-игры работ** показывают задание клиенту, поэтому защита от автоматизации — только проверка времени (≥ 0,3 с на шаг) и лимит наград за смену; это осознанный компромисс для небольших наград.
 14. **Записки, доски и очередь работ** живут до перезапуска сервера. Полёт брошенной гранаты (физика) в имитации не проверяется — проверяется только взрыв.
+15. **SCP-939 «слышит» только то, что сервер считает шумом** (чат, выстрелы, бег); голосовой чат игроков в шум не входит — сервер не знает надёжно, кто говорит. Модель — временная.
+16. **Мастерская и глушилка** дают контрабанду; её баланс (особенно отмычки) нужно проверить на живом сервере.
 
 ## Следующий конкретный шаг
 

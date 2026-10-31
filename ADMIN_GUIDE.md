@@ -62,6 +62,8 @@ SITE-VEIL регистрирует привилегии через CAMI, поэ�
 | `board` *(аддон notes)* | `name`, `division` (доска подразделения; пусто — общая) | `sv_notice_board` |
 | `workstation` *(аддон labor)* | `job` = `sorting` / `assembly` / `cleaning`, `name` | `sv_workstation` |
 | `alarm` *(аддон alarms)* | `sector` | `sv_alarm_light` |
+| `medbed` *(аддон surgery)* | `name` | `sv_medbed` |
+| `workbench` *(аддон crafting)* | `bench` = `general` / `engineering` / `medical`, `name` | `sv_workbench` |
 
 Терминалы аддонов: `terminal=intercom` (интерком), `terminal=cctv` (пост видеонаблюдения). Типы появляются в редакторе, только когда соответствующий аддон установлен; см. [ADDONS.md](ADDONS.md).
 
