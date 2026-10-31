@@ -54,6 +54,9 @@ local sections = {
     }},
 }
 
+-- Addons append their own sections: table.insert(UI.helpSections, {title, {lines}}).
+UI.helpSections = sections
+
 UI.registerTab{
     id = "help", name = "Справка", order = 90,
     build = function(panel)

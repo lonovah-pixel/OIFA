@@ -40,3 +40,9 @@ UI.registerInteraction{
     id = "emotes", name = "Жесты…", order = 99,
     action = function() SV.Emotes.openMenu() end,
 }
+
+table.insert(UI.helpSections, {"Жесты", {
+    "Консоль sv_emotes или меню взаимодействия → «Жесты…»; /emote wave|salute|agree|…",
+    "ПКМ пустыми руками по человеку → «Пожать руку» (нужно согласие).",
+    "/roll [граней] — бросок кубика, /try действие — попытка 50 на 50 (бросает сервер).",
+}})

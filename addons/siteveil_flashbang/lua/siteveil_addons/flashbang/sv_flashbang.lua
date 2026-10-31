@@ -32,7 +32,7 @@ function Flash.detonate(pos, by)
             end
         end
     end
-    sound.Play("weapons/flashbang/flashbang_explode2.wav", pos, 100)
+    sound.Play("weapons/explode3.wav", pos, 100)
     if SV.Evidence then
         SV.Evidence.addTrace("flash", pos, {attacker = IsValid(by) and by.SVChar and {char = by.SVChar.id, name = by.SVChar.name, division = by.SVChar.division} or nil})
     end

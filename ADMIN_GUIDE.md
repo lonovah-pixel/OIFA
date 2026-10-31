@@ -59,6 +59,10 @@ SITE-VEIL регистрирует привилегии через CAMI, поэ�
 | `tesla` *(аддон tesla)* | `name`, `sector`, `radius` | `sv_tesla_gate` |
 | `camera` *(аддон cctv)* | `name`, `sector`; направление — угол точки («Добавить по взгляду» ставит точку туда, куда вы смотрите, угол — по вашему взгляду) | `sv_cctv_camera` |
 
+| `board` *(аддон notes)* | `name`, `division` (доска подразделения; пусто — общая) | `sv_notice_board` |
+| `workstation` *(аддон labor)* | `job` = `sorting` / `assembly` / `cleaning`, `name` | `sv_workstation` |
+| `alarm` *(аддон alarms)* | `sector` | `sv_alarm_light` |
+
 Терминалы аддонов: `terminal=intercom` (интерком), `terminal=cctv` (пост видеонаблюдения). Типы появляются в редакторе, только когда соответствующий аддон установлен; см. [ADDONS.md](ADDONS.md).
 
 ### Двери

@@ -53,3 +53,8 @@ UI.registerInteraction{
 }
 
 concommand.Add("sv_myrecord", function() Net.call("srec.view", LocalPlayer()) end)
+
+table.insert(UI.helpSections, {"Личное дело", {
+    "Консоль sv_myrecord — своё личное дело; меню взаимодействия → «Личное дело сотрудника» (для начальства).",
+    "Два действующих взыскания задерживают повышение; благодарность даёт опыт.",
+}})

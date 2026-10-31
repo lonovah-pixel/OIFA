@@ -19,7 +19,7 @@ DarkRP не изменён. Список изменённого поведени
 
 ## Игровой контент
 
-Модели, материалы и звуки — **только из Half-Life 2 / Garry's Mod**, установленных вместе с игрой (`models/player/*.mdl`, `models/weapons/*.mdl`, звуки `npc/`, `physics/`, `ambient/`, `vo/`). Они не входят в репозиторий и принадлежат Valve. Контент из Steam Workshop не используется и не требуется. Аддоны из `addons/` используют те же модели HL2 (`models/props_combine/combine_emitter01.mdl`, `models/props_combine/combinecamera001.mdl`, `models/props_junk/PopCan01a.mdl`, `models/player/zombie_fast.mdl` как временная модель SCP-999 — свободной модели «желе» в Garry's Mod нет) и звуки HL2.
+Модели, материалы и звуки — **только из Half-Life 2 / Garry's Mod**, установленных вместе с игрой (`models/player/*.mdl`, `models/weapons/*.mdl`, звуки `npc/`, `physics/`, `ambient/`, `vo/`). Они не входят в репозиторий и принадлежат Valve. Контент из Steam Workshop не используется и не требуется. Аддоны из `addons/` используют те же модели HL2 (`models/props_combine/combine_emitter01.mdl`, `models/props_combine/combinecamera001.mdl`, `models/props_junk/PopCan01a.mdl`, `models/player/zombie_fast.mdl` как временная модель SCP-999 — свободной модели «желе» в Garry's Mod нет) и звуки HL2; второй пакет — `models/props_c17/paper01.mdl`, `models/props_junk/wood_crate001a.mdl`, `models/props_c17/light_cagelight01_on.mdl`, `models/weapons/w_grenade.mdl`, `models/weapons/c_grenade.mdl`, звуки `ambient/alarms/*.wav` и `weapons/explode3.wav` (HL2).
 
 ## SCP Foundation — CC BY-SA 3.0
 

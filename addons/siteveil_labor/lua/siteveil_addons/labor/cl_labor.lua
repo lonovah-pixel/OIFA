@@ -109,3 +109,8 @@ Net.on("labor.challenge", function(data)
     if not build then return end
     build(frame(data), data)
 end)
+
+table.insert(UI.helpSections, {"Работы", {
+    "Рабочие места (ящики сортировки, сборки, уборки): E — приступить. Работа приносит опыт и пополняет склад.",
+    "Норма — " .. SV.Config.Labor.perShift .. " работ за смену; ошибки и спешка не засчитываются.",
+}})
