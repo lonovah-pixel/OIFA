@@ -19,7 +19,7 @@ DarkRP не изменён. Список изменённого поведени
 
 ## Игровой контент
 
-Модели, материалы и звуки — **только из Half-Life 2 / Garry's Mod**, установленных вместе с игрой (`models/player/*.mdl`, `models/weapons/*.mdl`, звуки `npc/`, `physics/`, `ambient/`, `vo/`). Они не входят в репозиторий и принадлежат Valve. Контент из Steam Workshop не используется и не требуется.
+Модели, материалы и звуки — **только из Half-Life 2 / Garry's Mod**, установленных вместе с игрой (`models/player/*.mdl`, `models/weapons/*.mdl`, звуки `npc/`, `physics/`, `ambient/`, `vo/`). Они не входят в репозиторий и принадлежат Valve. Контент из Steam Workshop не используется и не требуется. Аддоны из `addons/` используют те же модели HL2 (`models/props_combine/combine_emitter01.mdl`, `models/props_combine/combinecamera001.mdl`, `models/props_junk/PopCan01a.mdl`, `models/player/zombie_fast.mdl` как временная модель SCP-999 — свободной модели «желе» в Garry's Mod нет) и звуки HL2.
 
 ## SCP Foundation — CC BY-SA 3.0
 
@@ -33,6 +33,7 @@ SITE-VEIL использует концепции вселенной SCP Foundat
 | SCP-106 «Старик» | http://scp-wiki.wikidot.com/scp-106 | Dr Gears |
 | SCP-049 «Чумной доктор» | http://scp-wiki.wikidot.com/scp-049 | Gabriel Jade |
 | SCP-096 «Скромник» | http://scp-wiki.wikidot.com/scp-096 | Dr Dan |
+| SCP-999 «Щекоточный монстр» (аддон `siteveil_scp999`, текст в `sv_content.lua`) | http://scp-wiki.wikidot.com/scp-999 | ProfSnider |
 | Мобильные оперативные группы, Повстанцы Хаоса, Совет О5, класс D, классы объектов | http://scp-wiki.wikidot.com (статьи о Фонде, группах интересов и классах объектов) | участники SCP Wiki |
 
 Авторы указаны по данным страниц вики на момент написания; перед публичным распространением сверьте их с разделом лицензирования каждой страницы (у многих статей есть переработки других авторов, которые тоже указываются).

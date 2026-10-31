@@ -15,9 +15,10 @@
 | 5 | «Исследования с неизвестным результатом» (9 протоколов) | ✔ | ✔ | ✔ 5 | ✖ |
 | 6 | «След инцидента», «Директор напряжения» (12 событий), «Двойные задачи», подкрепление МОГ/Хаоса, терминалы снабжения и медицины | ✔ | ✔ | ✔ 8 | ✖ |
 | 7 | панель администратора, русские фразы DarkRP, экспорт разметки в Lua, справка, документация | ✔ | ✔ | ✔ 4 | ✖ |
-| — | клиентский код всех этапов | ✔ | ✔ | дымовой тест: 4 (загрузка, HUD/вкладки, 72 реальных ответа сервера через 45 обработчиков) | ✖ |
+| А | система аддонов и 6 аддонов: интерком, обеззараживание, тесла-ворота, видеонаблюдение, SCP-999, табло | ✔ | ✔ | ✔ 3 (загрузчик) + 7 (аддоны) | ✖ |
+| — | клиентский код всех этапов и аддонов | ✔ | ✔ | дымовой тест: 5 (загрузка, HUD/вкладки, табло, 74 реальных ответа сервера через 47 обработчиков) | ✖ |
 
-Итого 104 автоматических теста, все проходят; glualint 1.30.0 — без замечаний (`tools/check.sh`).
+Итого 115 автоматических тестов, все проходят; glualint 1.30.0 — без замечаний по режиму, аддонам и тестам (`tools/check.sh`).
 
 ## Как проверялось
 
@@ -36,7 +37,9 @@
 - `gamemodes/siteveil/entities/` — сущности `sv_item`, `sv_item_bag`, `sv_locker`, `sv_supply_crate`, `sv_infra_node`, `sv_terminal`, `sv_containment_panel`; оружие `sv_hands`, `sv_mapper`, `sv_toolkit`, `sv_medkit`, `sv_restraints`, `sv_baton`, `sv_evidence_kit`, `sv_scp173`, `sv_scp106`, `sv_scp049`, `sv_scp0492`, `sv_scp096`.
 - `tests/` — стенд (`harness/gmod_mock.lua`, `client_stubs.lua`, `boot.lua`, `runner.py`), серверные тесты `server/test_stage1..7.lua`, `test_zz_ui_payloads.lua`, клиентский `client/test_client_smoke.lua`.
 - `tools/` — `check.sh`, `install_glualint.sh`, `darkrp.lock`, `glualint.darkrp.json`; `glualint.json`; `server/server.cfg.example`.
-- Документация: `README.md`, `ARCHITECTURE.md`, `DARKRP_CHANGES.md`, `ADMIN_GUIDE.md`, `PLAYER_GUIDE.md`, `BALANCE.md`, `TESTING.md`, `THIRD_PARTY.md`, `CHANGELOG.md`, этот файл.
+- `gamemodes/siteveil/gamemode/sh_addons.lua` — загрузчик аддонов; точки расширения в `modules/admin/sv_mapedit.lua`, `modules/comms/sv_radio.lua`, `modules/director/sv_director.lua`, `modules/research/sv_research.lua`, `modules/scp/sv_scp.lua`, `modules/facility/sv_states.lua`, `modules/admin/sv_admin.lua`, `cl_admin.lua`.
+- `addons/siteveil_intercom`, `siteveil_decontamination`, `siteveil_tesla`, `siteveil_cctv`, `siteveil_scp999`, `siteveil_scoreboard`; тесты `tests/server/test_addon_loader.lua`, `test_addons.lua`, тестовые аддоны `tests/fixtures/addons/`.
+- Документация: `README.md`, `ARCHITECTURE.md`, `ADDONS.md`, `DARKRP_CHANGES.md`, `ADMIN_GUIDE.md`, `PLAYER_GUIDE.md`, `BALANCE.md`, `TESTING.md`, `THIRD_PARTY.md`, `CHANGELOG.md`, этот файл.
 
 ## Известные проблемы и ограничения
 
@@ -49,6 +52,9 @@
 7. **Моргание у SCP-173** использует `math.Rand` и не воспроизводится зерном `sv_rng_seed` (исходы экспериментов, директор, предложения скрытых заданий и прибытие Хаоса воспроизводятся).
 8. **Игроки-SCP** не имеют «пустых рук», поэтому меню взаимодействия для них — консольная команда `sv_interact`.
 9. **Лицензия собственного кода** не выбрана (нет файла LICENSE) — решение владельца репозитория.
+10. **Загрузчик аддонов в настоящем GMod не проверен.** Клиент находит аддоны через `file.Find(..., "LUA")` по файлам, которые сервер отправил `AddCSLuaFile`, и выполняет их через `CompileFile` + `pcall`; отключение аддона на клиенте полагается на то, что сервер не отправляет его файлы, и на реплицируемую переменную `siteveil_addons_disabled`. В имитации это работает; в игре нужно проверить по [TESTING.md](TESTING.md), 3.12.
+11. **Видеонаблюдение** использует `SetViewEntity` и `AddOriginToPVS`: как выглядит картинка камеры и успевают ли приходить сущности вокруг дальней камеры — не проверено.
+12. **Модели-заглушки**: у SCP-999 нет подходящей модели в Garry's Mod — используется уменьшенная окрашенная модель HL2.
 
 ## Следующий конкретный шаг
 

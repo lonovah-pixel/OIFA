@@ -63,6 +63,12 @@ init.lua / cl_init.lua
 | `admin` | права CAMI, дежурство, редактор карты, панель | facility, mapcfg |
 | `ui` | экран персонажей и вкладки F4 | ui_base, tasks, supply |
 
+## 3а. Аддоны
+
+`sh_addons.lua` находит в установленных аддонах Garry's Mod каталоги `lua/siteveil_addons/<id>/` с описанием `addon.lua`. Файлы аддонов грузятся в два этапа: **config** — сразу после модуля `config` (аддон может дописать роли, предметы, параметры до индексации ролей и генерации профессий DarkRP) и **main** — после последнего модуля режима. Учитываются `requires` (модули), `depends` и `after` (аддоны). Каждый файл выполняется в `pcall`: ошибка аддона помечает его «ошибка» и попадает в `Loader.errors` и админ-панель, но не останавливает режим. Отключение — `siteveil_addons_disabled`.
+
+Аддоны пользуются только публичным API: типы точек и зон карты (`MapCfg.pointKinds`, `zoneKinds`, `terminalKinds`, `editorProps`), `Facility.registerTerminal`, `SCP.register` (с флагом `minor` для безобидных объектов), `Research.registerProtocol`, `Director.registerEvent` (вид `custom`), `Comms.setBroadcast`, UI-регистрации и хуки, шина событий, `Net.define`. Подробно — [ADDONS.md](ADDONS.md).
+
 ## 4. Принципы
 
 **Единственный источник истины.** Каждое состояние принадлежит одному модулю: роли — `roles`, предметы — `inventory` (у предмета ровно одно местоположение: персонаж / мир / хранилище), допуск — `access`, питание — `facility`, состояние содержания — `scp`. Остальные спрашивают владельца или подписываются на его события.
