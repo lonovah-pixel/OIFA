@@ -1,0 +1,10 @@
+{
+    "title": "SITE-VEIL: Глушилка и пеленгатор",
+    "type": "gamemode",
+    "tags": [
+        "roleplay"
+    ],
+    "ignore": [
+        "*.md"
+    ]
+}

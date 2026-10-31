@@ -1,0 +1,10 @@
+{
+    "title": "SITE-VEIL: Учебная тревога",
+    "type": "gamemode",
+    "tags": [
+        "roleplay"
+    ],
+    "ignore": [
+        "*.md"
+    ]
+}

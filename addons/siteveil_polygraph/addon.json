@@ -1,0 +1,10 @@
+{
+    "title": "SITE-VEIL: Полиграф",
+    "type": "gamemode",
+    "tags": [
+        "roleplay"
+    ],
+    "ignore": [
+        "*.md"
+    ]
+}

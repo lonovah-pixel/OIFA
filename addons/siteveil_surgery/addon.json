@@ -1,0 +1,10 @@
+{
+    "title": "SITE-VEIL: Хирургия",
+    "type": "gamemode",
+    "tags": [
+        "roleplay"
+    ],
+    "ignore": [
+        "*.md"
+    ]
+}

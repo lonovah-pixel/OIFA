@@ -117,8 +117,15 @@ end
 
 --- Quality of a link between two radios in [0, 1].
 function Comms.linkQuality(from, to)
-    if U.within(from, to, C.Radio.shortRange) then return 1 end
-    return math.min(Comms.sectorHealth(from), Comms.sectorHealth(to))
+    local q
+    if U.within(from, to, C.Radio.shortRange) then
+        q = 1
+    else
+        q = math.min(Comms.sectorHealth(from), Comms.sectorHealth(to))
+    end
+    -- Addons (jammers ...) may lower the quality: return a number in 0..1.
+    local override = hook.Run("SiteVeil.RadioQuality", from, to, q)
+    return isnumber(override) and math.Clamp(override, 0, 1) or q
 end
 
 --- Deterministic garbling: the same message is garbled the same way for the

@@ -1,0 +1,10 @@
+{
+    "title": "SITE-VEIL: SCP-939",
+    "type": "gamemode",
+    "tags": [
+        "roleplay"
+    ],
+    "ignore": [
+        "*.md"
+    ]
+}

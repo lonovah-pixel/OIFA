@@ -1,0 +1,10 @@
+{
+    "title": "SITE-VEIL: Мастерская",
+    "type": "gamemode",
+    "tags": [
+        "roleplay"
+    ],
+    "ignore": [
+        "*.md"
+    ]
+}
